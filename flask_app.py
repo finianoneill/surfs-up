@@ -50,7 +50,7 @@ def welcome():
 @app.route("/api/v1.0/precipitation")
 def names():
 	"""Query for the dates and temperature observations from the last year.
-	Convert the query results to a Dictionary using date as the key and tobs as the value.
+	Convert the query results to a Dictionary using date as the key and prcp as the value.
 	Return the JSON representation of your dictionary."""
 	measurements = session.query(Measurement)
 	max_date = dt.datetime(2010,1,1)
@@ -71,7 +71,7 @@ def names():
 	# loop back through the data and store the precipitation data (column 'prcp') 
 	# and date for the last 12 months prior to the max date in the dataset
 	date_list = []
-	tobs_list = []
+	prcp_list = []
 	for measurement in measurements:
 	# check to see if date for current db row is within the last 12 months
 		current_year = int(measurement.date.split("-")[0])
@@ -82,10 +82,10 @@ def names():
 		# min_date then it is within the range
 		if current_date >= min_date and current_date <= max_date:
 			date_list.append(str(current_date))
-			tobs_list.append(measurement.tobs)
+			prcp_list.append(measurement.prcp)
 
 	# create dictionary of dates and tobs
-	tobs_dictionary = dict(zip(date_list, tobs_list))
+	tobs_dictionary = dict(zip(date_list, prcp_list))
 
 	return jsonify(tobs_dictionary)
 
