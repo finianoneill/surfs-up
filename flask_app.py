@@ -162,16 +162,16 @@ def starts(start):
 	start_date = start
 
 	# calculate the minimum, average and maximum temps for the range provided
-	start_temps = calc_temps(min_date, max_date)
-	temperature_minimum = float(str(last_year_calc_temps[0]).split(",")[0][-len(str(last_year_calc_temps[0]).split(",")[0])+1:])
-	temperature_average = float(str(last_year_calc_temps[0]).split(",")[1][-len(str(last_year_calc_temps[0]).split(",")[1])+1:])
-	temperature_maximum = float(str(last_year_calc_temps[0]).split(",")[2][-len(str(last_year_calc_temps[0]).split(",")[2])+1:]\
-	[:len(str(last_year_calc_temps[0]).split(",")[2][-len(str(last_year_calc_temps[0]).split(",")[2])+1:])-1])
+	start_temps = calc_temps(start_date, end_date)
+	temperature_minimum = float(str(start_temps[0]).split(",")[0][-len(str(start_temps[0]).split(",")[0])+1:])
+	temperature_average = float(str(start_temps[0]).split(",")[1][-len(str(start_temps[0]).split(",")[1])+1:])
+	temperature_maximum = float(str(start_temps[0]).split(",")[2][-len(str(start_temps[0]).split(",")[2])+1:]\
+	[:len(str(start_temps[0]).split(",")[2][-len(str(start_temps[0]).split(",")[2])+1:])-1])
 
 	# create dictionary of the temperatures
 	temp_dictionary = {"minimum_temp":str(temperature_minimum),"average_temperature":str(temperature_average),"maximum_temperature":str(temperature_maximum)}
 
-	return jsonify(temperature_maximum)
+	return jsonify(temp_dictionary)
 
 
 
