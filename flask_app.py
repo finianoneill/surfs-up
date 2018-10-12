@@ -45,7 +45,8 @@ def welcome():
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/start_date/<start>"
+        f"/api/v1.0/start_date/[enter start date]<br/>"
+        f"/api/v1.0/start_and_end_date/[enter start date]/[enter end date]"
     )
 
 
@@ -173,6 +174,28 @@ def starts(start):
 
 	return jsonify(temp_dictionary)
 
+@app.route("/api/v1.0/start_and_end_date/<start>/<end>")
+def ends(start, end):
+	"""Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
+	When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive."""
+	# since no end date given set end date to arbitrary point way in the future
+	end_date = end
+	# set the start date equal to the date provided in the route
+	#start_date = request.args['start']
+	start_date = start
+
+	# calculate the minimum, average and maximum temps for the range provided
+	start_temps = calc_temps(start_date, end_date)
+	temperature_minimum = str(start_temps[0]).split(",")[0][-len(str(start_temps[0]).split(",")[0])+1:]
+	temperature_average = str(start_temps[0]).split(",")[1][-len(str(start_temps[0]).split(",")[1])+1:]
+	temperature_maximum = str(start_temps[0]).split(",")[2][-len(str(start_temps[0]).split(",")[2])+1:]\
+	[:len(str(start_temps[0]).split(",")[2][-len(str(start_temps[0]).split(",")[2])+1:])-1]
+
+	# create dictionary of the temperatures
+	temp_dictionary = {"minimum_temp":str(temperature_minimum),"average_temperature":str(temperature_average),"maximum_temperature":str(temperature_maximum)}
+
+	return jsonify(temp_dictionary)
+
 
 
 def calc_temps(start_date, end_date):
@@ -188,12 +211,6 @@ def calc_temps(start_date, end_date):
     
     return session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
         filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).all()
-"""/api/v1.0/<start> and /api/v1.0/<start>/<end>
-
-
-Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
-When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
-When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive."""
 
 
 if __name__ == '__main__':
